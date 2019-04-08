@@ -4,8 +4,8 @@
       "RequestTokenURL" :"https://secure.splitwise.com/oauth/request_token",
       "ConsumerKey"     :"W2qZB3n4iGOtBy6jMe7Imp8DFYtllrMiasNFB7I8",
       "ConsumerSecret"  :"sEUHoq0EiYu8XCplsm4gh8SQ3HHirKKZwnSaZ0ZF",
-      "CallbackURL"     : "http://spending.atulmirajkar.com/expenses",
-      "AngularHandler"  : "http://splitwise.atulmirajkar.com"
+      "CallbackURL"     :"https://spending.atulmirajkar.com/expenses",
+      "AngularHandler"  :"https://splitwise.atulmirajkar.com"
   }
     
   

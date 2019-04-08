@@ -32,7 +32,7 @@ COPY --from=builder /go/src/splitwiseAngularAPI/config.json .
 
 #entrypoint
 #ENTRYPOINT ["/go/bin/splitwiseAngularAPI","-config=configEncrypted.txt","-log=./data/passwordserver.log"]
-ENTRYPOINT ["/go/bin/splitwiseAngularAPI"]
+ENTRYPOINT ["/go/bin/splitwiseAngularAPI","-config=config-prod.json"]
 
 #expose port
 EXPOSE 9094
@@ -40,6 +40,13 @@ EXPOSE 9094
 #Build
 #docker build -t expensegoapi . 
 
+#push to hub
+#docker login -p -u=atulmirajkar
+#docker push atulmirajkar/golang-splitwise-api:v1.0
+
+#pull from hub
+#docker pull atulmirajkar/golang-splitwise-api:v1.0
+
 #run
-#docker run -p 9094:9094 --name expensegoapi
+#docker run -p 9094:9094 --name expensegoapi:v1.0
 
