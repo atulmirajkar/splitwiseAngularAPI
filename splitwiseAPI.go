@@ -20,7 +20,7 @@ func main() {
 	logFilePathPtr := flag.String("log", "splitwiseAPIServer.log", "log file path - default splitwiseAPIServer.log will be used")
 
 	//read config
-	configFilePathPtr := flag.String("config", "config.json", "config file path - default splitwiseconfig.json will be used")
+	configFilePathPtr := flag.String("config", "config.json", "config file path - default config.json will be used")
 	flag.Parse()
 
 	//controller logger
