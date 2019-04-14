@@ -27,7 +27,7 @@ WORKDIR /go/bin
 COPY --from=builder /go/bin/splitwiseAngularAPI .
 
 #copy static html and config files
-COPY --from=builder /go/src/splitwiseAngularAPI/config.json .
+COPY --from=builder /go/src/splitwiseAngularAPI/config-prod.json .
 
 
 #entrypoint

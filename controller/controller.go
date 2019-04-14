@@ -172,7 +172,7 @@ func setCookieAndCache(w http.ResponseWriter, sessionToken *oauth1.Token) {
 		Name:   "clientMap",
 		Value:  cookieEncoded,
 		Path:   "/",
-		MaxAge: 300,
+		MaxAge: 60 * 60,
 	}
 	http.SetCookie(w, cookie)
 
@@ -522,8 +522,9 @@ func getStartAndEndDate(query url.Values) (time.Time, time.Time) {
 	endYear, _ := strconv.Atoi(query["endYear"][0])
 	endMonth, _ := strconv.Atoi(query["endMonth"][0])
 	endDate, _ := strconv.Atoi(query["endDay"][0])
+	endDate = endDate + 1 //before end of today's date
 
-	loc := time.FixedZone("UTC-8", 0)
+	loc := time.FixedZone("UTC", 0)
 
 	startTime := time.Date(startYear, time.Month(startMonth), startDate, 0, 0, 0, 0, loc)
 	endTime := time.Date(endYear, time.Month(endMonth), endDate, 0, 0, 0, 0, loc)
