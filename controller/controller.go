@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -361,26 +362,16 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
 
-	var groupData interface{}
-	err = json.Unmarshal(contents, &groupData)
+	//unmarshall to expense object
+	var groupArrWrapper expense.GroupArrWrapper
+	json.Unmarshal(contents, &groupArrWrapper)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	//create object to send
-
-	groupDataArr := groupData.(map[string]interface{})["groups"].([]interface{})
-	groupIDNameMap := make(map[string]string)
-
-	for _, group := range groupDataArr {
-		groupMap := group.(map[string]interface{})
-		groupIDNameMap[strconv.FormatFloat(groupMap["id"].(float64), 'f', 0, 64)] = groupMap["name"].(string)
-
-	}
-
 	//send response
-	groupIDNameJSON, err := json.Marshal(groupIDNameMap)
+	groupIDNameJSON, err := json.Marshal(groupArrWrapper.Groups)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -500,6 +491,59 @@ func GetGroupData(w http.ResponseWriter, r *http.Request) {
 	w.Write(contentJSON)
 
 }
+
+func GetCategories(w http.ResponseWriter, r *http.Request) {
+	//get session values
+	sessionVals := validateSessionAndGetUser(r)
+	if sessionVals == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	//read request body
+	defer r.Body.Close()
+
+	//make splitwise request
+	httpClient := splitwiseAuthConfig.Client(oauth1.NoContext, sessionVals.token)
+	categoriesResponse, _ := httpClient.Get("https://secure.splitwise.com/api/v3.0/get_categories")
+
+	contents, _ := ioutil.ReadAll(categoriesResponse.Body)
+
+	//unmarshall to expense object
+	var categoriesWrapper expense.CategoryWrapper
+	json.Unmarshal(contents, &categoriesWrapper)
+
+	//extract individual expenses
+	categoriesArr := extractCategories(categoriesWrapper)
+
+	//send response
+	contentJSON, err := json.Marshal(categoriesArr)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", config.AngularHandler)
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Write(contentJSON)
+}
+
+func extractCategories(categoriesWrapper expense.CategoryWrapper) []expense.Subcategories {
+	responseCategoriesArr := make([]expense.Subcategories, 0)
+
+	for _, individualCategory := range categoriesWrapper.Categories {
+		responseCategoriesArr = append(responseCategoriesArr, expense.Subcategories{ID: individualCategory.ID, Name: individualCategory.Name})
+		for _, indSubCategory := range individualCategory.Subcategories {
+			responseCategoriesArr = append(responseCategoriesArr, expense.Subcategories{ID: indSubCategory.ID, Name: indSubCategory.Name})
+		}
+	}
+
+	return responseCategoriesArr
+}
+
 func extractExpenses(expensesWrapper expense.ExpensesWrapper) []expense.ResponseExpense {
 	expenseArr := expensesWrapper.Expenses
 	responseExpenseArr := make([]expense.ResponseExpense, 0)
@@ -530,4 +574,47 @@ func getStartAndEndDate(query url.Values) (time.Time, time.Time) {
 	endTime := time.Date(endYear, time.Month(endMonth), endDate, 0, 0, 0, 0, loc)
 
 	return startTime, endTime
+}
+
+func CreateExpense(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", config.AngularHandler)
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	//get session values
+	sessionVals := validateSessionAndGetUser(r)
+	if sessionVals == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	//read request body
+
+	expenseObjByte, _ := ioutil.ReadAll(r.Body)
+	fmt.Println(string(expenseObjByte))
+	Trace.Println(string(expenseObjByte))
+	defer r.Body.Close()
+
+	requestURL, _ := url.Parse("https://secure.splitwise.com/api/v3.0/create_expense")
+
+	httpClient := splitwiseAuthConfig.Client(oauth1.NoContext, sessionVals.token)
+	response, err := httpClient.Post(requestURL.String(), "application/json", bytes.NewBuffer(expenseObjByte))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	defer response.Body.Close()
+
+	//create object to send
+	contents, _ := ioutil.ReadAll(response.Body)
+
+	w.Write([]byte(contents))
+
 }

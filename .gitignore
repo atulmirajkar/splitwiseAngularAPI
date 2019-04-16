@@ -15,3 +15,5 @@ Thumbs.db
 #misc
 *.*~
 debug
+*#*
+*.json

@@ -48,7 +48,26 @@ type Members struct {
 }
 
 type Group struct {
-	ID      int       `json:"id"`
-	Name    string    `json:"name"`
+	ID      int       `json:"ID"`
+	Name    string    `json:"Name"`
 	Members []Members `json:"members"`
+}
+
+type GroupArrWrapper struct {
+	Groups []Group `json:"groups"`
+}
+
+/*******************************************categories********************************/
+
+type CategoryWrapper struct {
+	Categories []Categories `json:"categories"`
+}
+type Subcategories struct {
+	ID   int    `json:"ID"`
+	Name string `json:"Name"`
+}
+type Categories struct {
+	ID            int             `json:"ID"`
+	Name          string          `json:"Name"`
+	Subcategories []Subcategories `json:"subcategories"`
 }

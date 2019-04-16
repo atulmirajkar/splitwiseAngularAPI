@@ -40,14 +40,17 @@ func main() {
 	router.HandleFunc("/getGroups", controller.GetGroups).Methods("GET")
 	router.HandleFunc("/GetGroupData", controller.GetGroupData).Methods("GET")
 	router.HandleFunc("/GetGroupUsers", controller.GetGroupUsers).Methods("GET")
+	router.HandleFunc("/CreateExpense", controller.CreateExpense).Methods("POST", "OPTIONS", "PUT")
+	router.HandleFunc("/GetCategories", controller.GetCategories).Methods("GET")
 
 	//allow headers
-	headers := handlers.AllowedMethods([]string{"X-Requested-With", "Content-Type", "Authorization"})
-	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
-	origins := handlers.AllowedOrigins([]string{"*"})
+	headers := handlers.AllowedHeaders([]string{"Accept", "X-Requested-With", "Content-Type", "Authorization", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Access-Control-Allow-Credentials"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
+	origins := handlers.AllowedOrigins([]string{"http://localhost:4200"})
+	creds := handlers.AllowCredentials()
 
 	//listen
-	err := http.ListenAndServe(":9094", handlers.CORS(headers, methods, origins)(router))
+	err := http.ListenAndServe(":9094", handlers.CORS(headers, methods, origins, creds)(router))
 	if err != nil {
 		Trace.Fatal("ListenAndServe", err)
 	}
