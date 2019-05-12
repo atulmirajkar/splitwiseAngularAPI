@@ -63,11 +63,11 @@ type CategoryWrapper struct {
 	Categories []Categories `json:"categories"`
 }
 type Subcategories struct {
-	ID   int    `json:"ID"`
-	Name string `json:"Name"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 type Categories struct {
-	ID            int             `json:"ID"`
-	Name          string          `json:"Name"`
+	ID            int             `json:"id"`
+	Name          string          `json:"name"`
 	Subcategories []Subcategories `json:"subcategories"`
 }
