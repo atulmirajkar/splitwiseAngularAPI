@@ -46,7 +46,7 @@ func main() {
 	//allow headers
 	headers := handlers.AllowedHeaders([]string{"Accept", "X-Requested-With", "Content-Type", "Authorization", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Access-Control-Allow-Credentials", "Access-Control-Allow-Origin"})
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
-	origins := handlers.AllowedOrigins([]string{"http://localhost:4200"})
+	origins := handlers.AllowedOrigins([]string{"https://splitwise.atulmirajkar.com"})
 	creds := handlers.AllowCredentials()
 
 	//listen
