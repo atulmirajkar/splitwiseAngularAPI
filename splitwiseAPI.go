@@ -44,7 +44,7 @@ func main() {
 	router.HandleFunc("/GetCategories", controller.GetCategories).Methods("GET")
 
 	//allow headers
-	headers := handlers.AllowedHeaders([]string{"Accept", "X-Requested-With", "Content-Type", "Authorization", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Access-Control-Allow-Credentials"})
+	headers := handlers.AllowedHeaders([]string{"Accept", "X-Requested-With", "Content-Type", "Authorization", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Access-Control-Allow-Credentials", "Access-Control-Allow-Origin"})
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
 	origins := handlers.AllowedOrigins([]string{"http://localhost:4200"})
 	creds := handlers.AllowCredentials()
