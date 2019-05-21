@@ -31,10 +31,11 @@ type Expense struct {
 
 /*ResponseExpense - a single expense with category*/
 type ResponseExpense struct {
-	Category  string    `json:"category"`
-	UserID    int       `json:"user_id"`
-	OwedShare string    `json:"owed_share"`
-	Date      time.Time `json:"date"`
+	Category    string    `json:"category"`
+	UserID      int       `json:"user_id"`
+	OwedShare   string    `json:"owed_share"`
+	Date        time.Time `json:"date"`
+	Description string    `json:"description"`
 }
 
 /********************************************User Structs*******************************/

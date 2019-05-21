@@ -549,7 +549,7 @@ func extractExpenses(expensesWrapper expense.ExpensesWrapper) []expense.Response
 	responseExpenseArr := make([]expense.ResponseExpense, 0)
 	for _, individualExpense := range expenseArr {
 		for _, userInfo := range individualExpense.Users {
-			responseExpenseArr = append(responseExpenseArr, expense.ResponseExpense{Category: individualExpense.Category.Name, UserID: userInfo.UserID, OwedShare: userInfo.OwedShare, Date: individualExpense.Date})
+			responseExpenseArr = append(responseExpenseArr, expense.ResponseExpense{Category: individualExpense.Category.Name, UserID: userInfo.UserID, OwedShare: userInfo.OwedShare, Date: individualExpense.Date, Description: individualExpense.Description})
 		}
 	}
 	return responseExpenseArr
