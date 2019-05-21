@@ -27,6 +27,7 @@ type Expense struct {
 	Date        time.Time  `json:"date"`
 	Category    Category   `json:"category"`
 	Users       []UserInfo `json:"users"`
+	DeletedAt   time.Time  `json:"deleted_at"`
 }
 
 /*ResponseExpense - a single expense with category*/

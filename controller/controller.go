@@ -546,10 +546,14 @@ func extractCategories(categoriesWrapper expense.CategoryWrapper) []expense.Subc
 
 func extractExpenses(expensesWrapper expense.ExpensesWrapper) []expense.ResponseExpense {
 	expenseArr := expensesWrapper.Expenses
+	emptyTime := time.Time{}
 	responseExpenseArr := make([]expense.ResponseExpense, 0)
 	for _, individualExpense := range expenseArr {
 		for _, userInfo := range individualExpense.Users {
-			responseExpenseArr = append(responseExpenseArr, expense.ResponseExpense{Category: individualExpense.Category.Name, UserID: userInfo.UserID, OwedShare: userInfo.OwedShare, Date: individualExpense.Date, Description: individualExpense.Description})
+			//add if not deleted
+			if individualExpense.DeletedAt == emptyTime {
+				responseExpenseArr = append(responseExpenseArr, expense.ResponseExpense{Category: individualExpense.Category.Name, UserID: userInfo.UserID, OwedShare: userInfo.OwedShare, Date: individualExpense.Date, Description: individualExpense.Description})
+			}
 		}
 	}
 	return responseExpenseArr
